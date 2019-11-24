@@ -32,13 +32,13 @@ lap_comm::lap_comm(const int PORT){
     int c = sizeof(struct sockaddr_in);
      
     printf("Waiting for incoming connections...\n");
-    sockfd = accept(socket_desc, (struct sockaddr *)&client, (socklen_t*)&c);
+    /*sockfd = accept(socket_desc, (struct sockaddr *)&client, (socklen_t*)&c);
     if (sockfd < 0){
         printf("Accept failed\n");
         exit(0);
     }
 
-    printf("Connection accepted\n");
+    printf("Connection accepted\n");*/
 
     read_mtx = new std::mutex();
     write_mtx = new std::mutex();
@@ -54,8 +54,8 @@ void lap_comm::main(){
 
     while(1){
         time += time_interval;
-        send_data_out();
-        get_data_in();
+        //send_data_out();
+        //get_data_in();
         std::this_thread::sleep_until(time);
     }
 }

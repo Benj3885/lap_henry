@@ -3,7 +3,7 @@
 #include <arpa/inet.h> //inet_addr
 #include <unistd.h>    //write
 #include "comm.h"
-#include "keyboard.h"
+#include "ui.h"
 #include <chrono>
 #include <thread>
  
@@ -12,7 +12,7 @@
 int main(int argc, char *argv[]){
     lap_comm comm = lap_comm(PORT);
 
-    keyboard kb = keyboard(&comm);
+    ui u = ui(&comm);
 
     int interval = 200;
     auto time_interval = std::chrono::milliseconds(interval);

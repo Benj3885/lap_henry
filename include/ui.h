@@ -1,18 +1,22 @@
 #ifndef KEYBOARD_H
 #define KEYBOARD_H
-#include "keyboard.h"
+#include "ui.h"
 #include <allegro5/allegro.h>
 #include "comm.h"
 
+#define SCREEN_W 640
+#define SCREEN_H 480
 
-struct keyboard{
+
+struct ui{
     ALLEGRO_EVENT_QUEUE *event_queue;
     ALLEGRO_EVENT ev;
     lap_comm *comm;
 
-    keyboard(lap_comm *comm_obj);
+    ui(lap_comm *comm_obj);
 
     void kbmain();
+    void guimain();
 };
 
 #endif

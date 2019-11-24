@@ -1,25 +1,29 @@
-#include "keyboard.h"
+#include "ui.h"
+#include <stdio.h>
 #include <allegro5/allegro.h>
+#include <allegro5/allegro_ttf.h>
+#include <allegro5/allegro_font.h>
 #include "comm.h"
 #include <thread>
 
-keyboard::keyboard(lap_comm *comm_obj){
+ui::ui(lap_comm *comm_obj){
     comm = comm_obj;
 
-    const int SCREEN_W = 640;
-    const int SCREEN_H = 480;
-
     al_init();
+
     al_install_keyboard();
-    al_create_display(SCREEN_W, SCREEN_H);
+
     event_queue = al_create_event_queue();
     al_register_event_source(event_queue, al_get_keyboard_event_source());
 
-    std::thread kbthread(&keyboard::kbmain, this);
+    std::thread kbthread(&ui::kbmain, this);
     kbthread.detach();
+
+    std::thread guithread(&ui::guimain, this);
+    guithread.detach();
 }
 
-void keyboard::kbmain(){
+void ui::kbmain(){
     while(1){
         al_wait_for_event(event_queue, &ev);
 
@@ -60,5 +64,24 @@ void keyboard::kbmain(){
                     break;
             }
         }
+    }
+}
+
+void ui::guimain(){
+    al_create_display(SCREEN_W, SCREEN_H);
+    al_init_font_addon();
+    al_init_ttf_addon();
+
+    ALLEGRO_COLOR color = al_map_rgb(255, 255, 255);
+    ALLEGRO_FONT *font = al_load_font("fonts/Calibri Regular.ttf", 36, 0);
+
+    al_clear_to_color(al_map_rgb(0,0,0));
+
+    al_draw_text(font, color, 300, 300, 0, "TRIAL TEST");
+
+    al_flip_display();
+
+    while(1){
+
     }
 }
