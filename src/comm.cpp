@@ -36,15 +36,15 @@ lap_comm::lap_comm(const int PORT){
     if (sockfd < 0){
         printf("Accept failed\n");
         exit(0);
-    }
+    }*/
 
-    printf("Connection accepted\n");*/
+    printf("Connection accepted\n");
 
     read_mtx = new std::mutex();
     write_mtx = new std::mutex();
 
-    std::thread commthread(&lap_comm::main, this);
-    commthread.detach();
+    //std::thread commthread(&lap_comm::main, this);
+    //commthread.detach();
 }
 
 void lap_comm::main(){

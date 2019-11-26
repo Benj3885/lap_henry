@@ -68,7 +68,10 @@ void ui::kbmain(){
 }
 
 void ui::guimain(){
-    al_create_display(SCREEN_W, SCREEN_H);
+    ALLEGRO_DISPLAY *display = al_create_display(SCREEN_W, SCREEN_H);
+
+    al_set_window_position(display, 0, 0);
+
     al_init_font_addon();
     al_init_ttf_addon();
 
@@ -76,12 +79,21 @@ void ui::guimain(){
     ALLEGRO_FONT *font = al_load_font("fonts/Calibri Regular.ttf", 36, 0);
 
     al_clear_to_color(al_map_rgb(0,0,0));
-
     al_draw_text(font, color, 300, 300, 0, "TRIAL TEST");
-
     al_flip_display();
 
-    while(1){
+    int interval = 500;
+    auto time_interval = std::chrono::milliseconds(interval);
+    auto time = std::chrono::steady_clock::now();
 
+    while(1){
+        time += time_interval;
+        is = comm->read_data();
+        create_frame();
+        std::this_thread::sleep_until(time);
     }
+}
+
+void ui::create_frame(){
+    
 }

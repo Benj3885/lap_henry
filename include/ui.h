@@ -4,8 +4,8 @@
 #include <allegro5/allegro.h>
 #include "comm.h"
 
-#define SCREEN_W 640
-#define SCREEN_H 480
+#define SCREEN_W 1440
+#define SCREEN_H 900
 
 
 struct ui{
@@ -13,10 +13,13 @@ struct ui{
     ALLEGRO_EVENT ev;
     lap_comm *comm;
 
+    in_state is;
+
     ui(lap_comm *comm_obj);
 
     void kbmain();
     void guimain();
+    void create_frame();
 };
 
 #endif

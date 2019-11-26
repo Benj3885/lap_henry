@@ -47,9 +47,4 @@ struct lap_comm{
     in_state read_data();
     void write_data(char idx, int val);
 };
-
-
-
-
-
 #endif
