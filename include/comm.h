@@ -5,7 +5,7 @@
 #include <unistd.h>    //write
 #include <mutex>
 
-#define inBuff 5
+#define inBuff 33
 #define outBuff 5
 
 struct out_state{
@@ -14,17 +14,28 @@ struct out_state{
     char speed = 0;
 };
 
-struct pose{
-    unsigned int x, y, z;
-    unsigned int rx, ry, rz;
+union fval{
+    float f = 0;
+    uint8_t c[4];
 };
+
+struct integrated_data{
+    fval x, y, z;
+    fval vx, vy, vz;
+    fval rx, ry, rz;
+    fval temp;
+};
+
 struct in_state{
     bool W = 0, A = 0, S = 0, D = 0;
     char speed = 0;
-    pose p;
-    
-    uint last_read = 0;
 };
+
+struct in_data{
+    in_state is;
+    integrated_data id;
+};
+
 
 struct lap_comm{
     // TCP info
@@ -35,7 +46,7 @@ struct lap_comm{
     char out_mess[outBuff];
     out_state os;
     char in_mess[inBuff];
-    in_state is;
+    in_data id;
     std::mutex *read_mtx, *write_mtx;
 
     lap_comm(const int PORT);
@@ -44,7 +55,7 @@ struct lap_comm{
     void send_data_out();
     void get_data_in();
 
-    in_state read_data();
+    in_data read_data();
     void write_data(char idx, int val);
 };
 #endif

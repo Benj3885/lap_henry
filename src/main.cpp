@@ -12,7 +12,7 @@
 int main(int argc, char *argv[]){
     lap_comm comm = lap_comm(PORT);
 
-    ui u = ui(&comm);
+    //ui u = ui(&comm);
 
     int interval = 200;
     auto time_interval = std::chrono::milliseconds(interval);

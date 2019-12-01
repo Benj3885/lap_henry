@@ -32,19 +32,19 @@ lap_comm::lap_comm(const int PORT){
     int c = sizeof(struct sockaddr_in);
      
     printf("Waiting for incoming connections...\n");
-    /*sockfd = accept(socket_desc, (struct sockaddr *)&client, (socklen_t*)&c);
+    sockfd = accept(socket_desc, (struct sockaddr *)&client, (socklen_t*)&c);
     if (sockfd < 0){
         printf("Accept failed\n");
         exit(0);
-    }*/
+    }
 
     printf("Connection accepted\n");
 
     read_mtx = new std::mutex();
     write_mtx = new std::mutex();
 
-    //std::thread commthread(&lap_comm::main, this);
-    //commthread.detach();
+    std::thread commthread(&lap_comm::main, this);
+    commthread.detach();
 }
 
 void lap_comm::main(){
@@ -55,7 +55,7 @@ void lap_comm::main(){
     while(1){
         time += time_interval;
         //send_data_out();
-        //get_data_in();
+        get_data_in();
         std::this_thread::sleep_until(time);
     }
 }
@@ -103,21 +103,45 @@ void lap_comm::write_data(char idx, int val){
 }
 
 void lap_comm::get_data_in(){
-    recv(sockfd, in_mess, 5, 0);
+    recv(sockfd, in_mess, inBuff, 0);
     
     read_mtx->lock();
 
-    is.W = in_mess[0];
-    is.A = in_mess[1];
-    is.S = in_mess[2];
-    is.D = in_mess[3];
-    is.speed = in_mess[4];
+    id.is.W = in_mess[0];
+    id.is.A = in_mess[1];
+    id.is.S = in_mess[2];
+    id.is.D = in_mess[3];
+    id.is.speed = in_mess[4];
 
-    is.last_read++;
+    int idx = 5;
+    for(int i = 0; i < 4; i++){
+        id.id.x.c[i] = in_mess[idx]; idx++;
+    }
+    for(int i = 0; i < 4; i++){
+        id.id.y.c[i] = in_mess[idx]; idx++;
+    }
+    for(int i = 0; i < 4; i++){
+        id.id.z.c[i] = in_mess[idx]; idx++;
+    }
+    for(int i = 0; i < 4; i++){
+        id.id.rx.c[i] = in_mess[idx]; idx++;
+    }
+    for(int i = 0; i < 4; i++){
+        id.id.ry.c[i] = in_mess[idx]; idx++;
+    }
+    for(int i = 0; i < 4; i++){
+        id.id.rz.c[i] = in_mess[idx]; idx++;
+    }
+    for(int i = 0; i < 4; i++){
+        id.id.temp.c[i] = in_mess[idx]; idx++;
+    }
+
+    printf("%f\n", id.id.x.f);
+
     read_mtx->unlock();
 }
 
-in_state lap_comm::read_data(){
+in_data lap_comm::read_data(){
     std::lock_guard<std::mutex> lock(*read_mtx);
-    return is;
+    return id;
 }

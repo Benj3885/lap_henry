@@ -88,7 +88,6 @@ void ui::guimain(){
 
     while(1){
         time += time_interval;
-        is = comm->read_data();
         create_frame();
         std::this_thread::sleep_until(time);
     }
