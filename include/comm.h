@@ -5,12 +5,11 @@
 #include <unistd.h>    //write
 #include <mutex>
 
-#define inBuff 33
+#define inBuff 22
 #define outBuff 5
 
 struct out_state{
     volatile bool W = 0, A = 0, S = 0, D = 0;
-    bool trajTrack = 0;
     char speed = 0;
 };
 
@@ -20,15 +19,15 @@ union fval{
 };
 
 struct integrated_data{
-    fval x, y, z;
-    fval vx, vy, vz;
-    fval rx, ry, rz;
+    fval x, y;
+    fval rz;
     fval temp;
 };
 
 struct in_state{
     bool W = 0, A = 0, S = 0, D = 0;
     char speed = 0;
+    bool obs = 0;
 };
 
 struct in_data{
@@ -56,6 +55,7 @@ struct lap_comm{
     void get_data_in();
 
     in_data read_data();
-    void write_data(char idx, int val);
+    in_state read_is();
+    void write_os(out_state os_main);
 };
 #endif

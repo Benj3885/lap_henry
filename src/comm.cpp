@@ -8,6 +8,9 @@
 #include <mutex>
 
 lap_comm::lap_comm(const int PORT){
+    read_mtx = new std::mutex();
+    write_mtx = new std::mutex();
+
     //Create socket
     socket_desc = socket(AF_INET, SOCK_STREAM, 0);
      
@@ -31,7 +34,7 @@ lap_comm::lap_comm(const int PORT){
     
     int c = sizeof(struct sockaddr_in);
      
-    printf("Waiting for incoming connections...\n");
+    /*printf("Waiting for incoming connections...\n");
     sockfd = accept(socket_desc, (struct sockaddr *)&client, (socklen_t*)&c);
     if (sockfd < 0){
         printf("Accept failed\n");
@@ -40,11 +43,8 @@ lap_comm::lap_comm(const int PORT){
 
     printf("Connection accepted\n");
 
-    read_mtx = new std::mutex();
-    write_mtx = new std::mutex();
-
     std::thread commthread(&lap_comm::main, this);
-    commthread.detach();
+    commthread.detach();*/
 }
 
 void lap_comm::main(){
@@ -54,7 +54,7 @@ void lap_comm::main(){
 
     while(1){
         time += time_interval;
-        //send_data_out();
+        send_data_out();
         get_data_in();
         std::this_thread::sleep_until(time);
     }
@@ -62,8 +62,6 @@ void lap_comm::main(){
 
 void lap_comm::send_data_out(){
     write_mtx->lock();
-
-    printf("%d %d %d %d\n", os.W, os.A, os.S, os.D);
 
     out_mess[0] = (char)os.W;
     out_mess[1] = (char)os.A;
@@ -77,29 +75,9 @@ void lap_comm::send_data_out(){
     
 }
 
-void lap_comm::write_data(char idx, int val){
+void lap_comm::write_os(out_state os_main){
     std::lock_guard<std::mutex> lock(*write_mtx);
-
-    switch(idx){
-        case 0:
-            os.W = val;
-            break;
-        case 1:
-            os.A = val;
-            break;
-        case 2:
-            os.S = val;
-            break;
-        case 3:
-            os.D = val;
-            break;
-        case 4:
-            os.speed = val;
-            break;
-        case 5:
-            os.trajTrack = val;
-            break;
-    }
+    os = os_main;
 }
 
 void lap_comm::get_data_in(){
@@ -112,22 +90,14 @@ void lap_comm::get_data_in(){
     id.is.S = in_mess[2];
     id.is.D = in_mess[3];
     id.is.speed = in_mess[4];
+    id.is.obs = in_mess[5];
 
-    int idx = 5;
+    int idx = 6;
     for(int i = 0; i < 4; i++){
         id.id.x.c[i] = in_mess[idx]; idx++;
     }
     for(int i = 0; i < 4; i++){
         id.id.y.c[i] = in_mess[idx]; idx++;
-    }
-    for(int i = 0; i < 4; i++){
-        id.id.z.c[i] = in_mess[idx]; idx++;
-    }
-    for(int i = 0; i < 4; i++){
-        id.id.rx.c[i] = in_mess[idx]; idx++;
-    }
-    for(int i = 0; i < 4; i++){
-        id.id.ry.c[i] = in_mess[idx]; idx++;
     }
     for(int i = 0; i < 4; i++){
         id.id.rz.c[i] = in_mess[idx]; idx++;
@@ -145,3 +115,9 @@ in_data lap_comm::read_data(){
     std::lock_guard<std::mutex> lock(*read_mtx);
     return id;
 }
+
+in_state lap_comm::read_is(){
+    std::lock_guard<std::mutex> lock(*read_mtx);
+    return id.is;
+}
+

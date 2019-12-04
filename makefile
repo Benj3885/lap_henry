@@ -14,7 +14,7 @@ OBJ = $(SRC:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 CPPFLAGS += -Iinclude -std=c++11
 CFLAGS += -Wall
 LDFLAGS += -Llib
-LDLIBS += -lm -lallegro -lallegro_font -lallegro_ttf -pthread
+LDLIBS += -lm -lallegro -lallegro_font -lallegro_ttf -lallegro_image -lallegro_primitives -pthread
 
 .PHONY: all clean
 
