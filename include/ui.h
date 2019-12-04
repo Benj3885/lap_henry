@@ -34,6 +34,10 @@ struct ui{
     ALLEGRO_BITMAP *map;
 
     ALLEGRO_BITMAP *box;
+
+    ALLEGRO_BITMAP *mode;
+    ALLEGRO_BITMAP *exp;
+    ALLEGRO_BITMAP *climb;
     
     lap_comm *comm;
 

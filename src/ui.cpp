@@ -62,6 +62,14 @@ void ui::kbmain(){
                     os.speed = (os.speed > 0 ? os.speed - 1 : os.speed);
                     key = 'F';
                     break;
+                case ALLEGRO_KEY_P:
+                    key = 'P';
+                    //SET CLIMBER GAIT
+                    break;
+                case ALLEGRO_KEY_O:
+                    key = 'O';
+                    //SET Explorer gait
+                    break;
             } 
         } else if(ev.type == ALLEGRO_EVENT_KEY_UP) {
             switch(ev.keyboard.keycode){
@@ -109,6 +117,9 @@ void ui::guimain(){
     speed =  al_load_bitmap("figures/speed.png");
     sp =  al_load_bitmap("figures/sp.png");
     map = al_load_bitmap("figures/map.png");
+    mode = al_load_bitmap("figures/mode.png");
+    exp = al_load_bitmap("figures/explore.png");
+    climb = al_load_bitmap("figures/climb.png");
 
     //STUFF TO CHANGE, DATA FROM IMU AND SPEED
     char x[] = "8";
@@ -140,6 +151,7 @@ void ui::create_frame(char xpos[], char ypos[], char zpos[], char speedn[], floa
     al_draw_bitmap(speed, 600, 450, 0);
     al_draw_bitmap(sp, 600, 650, 0);
     al_draw_bitmap(robpos, 1035, 450, 0);
+    al_draw_bitmap(mode, 680, 80, 0);
 
     //Map
 
@@ -150,6 +162,8 @@ void ui::create_frame(char xpos[], char ypos[], char zpos[], char speedn[], floa
     al_draw_bitmap(okcom, 450, 45, 0);
     al_draw_bitmap(nocom, 450, 45, 0);
     al_draw_bitmap(yesobs, 450, 200, 0);
+    al_draw_bitmap(exp, 680, 200, 0);
+    //al_draw_bitmap(climb 680, 200, 0);
 
     //Arrows
     al_draw_bitmap(button, 800, 575, 0);
@@ -167,7 +181,9 @@ void ui::create_frame(char xpos[], char ypos[], char zpos[], char speedn[], floa
     if(is.A) al_draw_rotated_bitmap(box, 100, 100,  65, 625, M_PI/2, 0);
     if(is.D) al_draw_rotated_bitmap(box, 100, 100, 350, 625, M_PI/2, 0);
     if(keypress == 'R') al_draw_bitmap(box, 775, 575,0); 
-    if(keypress == 'F') al_draw_bitmap(box, 775, 710,0); 
+    if(keypress == 'F') al_draw_bitmap(box, 775, 710,0);
+    if(keypress == 'P') al_draw_bitmap(exp, 680, 200, 0);
+    if(keypress == 'O') al_draw_bitmap(climb 680, 200, 0);
 
     //al_draw_bitmap(box, 775, 575,0); 
     //al_draw_bitmap(box, 775, 710,0); 
